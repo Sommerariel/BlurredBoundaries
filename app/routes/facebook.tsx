@@ -10,25 +10,6 @@ import type { ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 
-
-// export async function loader() {
-//     return json(await fakeGetTodos());
-// }
-  
-export const action: ActionFunction = async ({
-    request,
-  }) => {
-    const form = await (await request.formData()).get("username");
-    FB.api('/me', {fields: 'last_name'}, function(response) {
-        console.log(response);
-      });
-    try {
-        return json({ ok: true });
-    } catch (error: any) {
-        return json({ error: error.message });
-    }
-};
-
 // Context.
 export const FbSdkScriptContext = createContext({});
 
@@ -97,21 +78,60 @@ export default function fbRoute({
     }, [hasLoaded]);
     console.log({isReady})
     console.log({hasLoaded})
+
+    const OnClick = () => {
+        console.log("clicked");
+        FB.getLoginStatus(function(response) {
+            console.log("fb log in status")
+            console.log({response});
+        });
+        FB.login(function(response) {
+            // handle the response
+            if (response.status === 'connected') {
+                // Logged into your webpage and Facebook.
+                console.log("logged in ")
+                console.log({response})
+              } else {
+                console.log("not logged in")
+                console.log({response})
+
+                // The person is not logged into your webpage or we are unable to tell. 
+              }
+          }, {scope: 'public_profile,email'});
+    }
+
+    const OnSubmit = (event: React.KeyboardEvent) => {
+        console.log({event})
+        if (event.key === 'Enter') {
+            console.log('enter');
+            OnClick();
+        }
+    }
+    
+    const OnLogOut = () => {
+        FB.logout(function(response) {
+            // Person is now logged out
+            console.log("logged out!!!")
+            console.log({response})
+         });
+         FB.getLoginStatus(function(response) {
+            console.log("fb log in status")
+            console.log({response});
+        });
+    }
     
 
     return (
         <FbSdkScriptContext.Provider value={{ isReady, hasLoaded }}>
             {hasLoaded && isReady && (
                 <>
-                    <fetcher.Form method="post" action="/facebook">
-                        <TextField id="fb-username" label="Username" variant="outlined"/> 
-                        <Button variant="outlined" type="submit" disabled={fetcher.state === "submitting"}>Submit</Button>
+                        <Button variant="outlined" onClick={OnClick}>Log into FB</Button>
+                        <Button variant="outlined" onClick={OnLogOut}>Log out FB</Button>
                         {fetcher.type === "done" ? (
                             fetcher.data.ok ? (
                                 <p> Your personal data: </p>
                             ) : null
                         ) : null }
-                    </fetcher.Form>
                 </>
             )}
 
