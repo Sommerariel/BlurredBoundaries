@@ -4,10 +4,7 @@ import {
     useState, 
     useEffect, 
   } from 'react';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import type { ActionFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 
 // Context.
@@ -30,8 +27,7 @@ export default function fbRoute({
    * Extra security measure to check if the script has
    * already been included in the DOM
    */
-    const scriptAlreadyExists = () => 
-        document.querySelector('script#fb-sdk') !== null;
+    const scriptAlreadyExists = () => document.querySelector('script#fb-sdk') !== null;
 
     /**
      * Append the script to the document.
@@ -49,10 +45,6 @@ export default function fbRoute({
         document.body.append(script)
     };
 
-    /**
-     * Runs first time when component is mounted
-     * and adds the script to the document.
-     */
     useEffect(() => {
         if (!scriptAlreadyExists()) {
             appendSdkScript()
@@ -76,10 +68,8 @@ export default function fbRoute({
         setIsReady(true)
     }
     }, [hasLoaded]);
-    console.log({isReady})
-    console.log({hasLoaded})
 
-    const OnClick = () => {
+    const OnLogOn = () => {
         console.log("clicked");
         FB.getLoginStatus(function(response) {
             console.log("fb log in status")
@@ -88,24 +78,14 @@ export default function fbRoute({
         FB.login(function(response) {
             // handle the response
             if (response.status === 'connected') {
-                // Logged into your webpage and Facebook.
+                // Logged Facebook.
                 console.log("logged in ")
-                console.log({response})
               } else {
+                // user did not allow log in
                 console.log("not logged in")
-                console.log({response})
-
-                // The person is not logged into your webpage or we are unable to tell. 
               }
+              console.log({response})
           }, {scope: 'public_profile,email'});
-    }
-
-    const OnSubmit = (event: React.KeyboardEvent) => {
-        console.log({event})
-        if (event.key === 'Enter') {
-            console.log('enter');
-            OnClick();
-        }
     }
     
     const OnLogOut = () => {
@@ -125,7 +105,7 @@ export default function fbRoute({
         <FbSdkScriptContext.Provider value={{ isReady, hasLoaded }}>
             {hasLoaded && isReady && (
                 <>
-                        <Button variant="outlined" onClick={OnClick}>Log into FB</Button>
+                        <Button variant="outlined" onClick={OnLogOn}>Log into FB</Button>
                         <Button variant="outlined" onClick={OnLogOut}>Log out FB</Button>
                         {fetcher.type === "done" ? (
                             fetcher.data.ok ? (
