@@ -5,6 +5,8 @@ import {
     useEffect, 
   } from 'react';
 import Button from '@mui/material/Button';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 export type ProfilePicture = {
     height: string;
@@ -140,24 +142,24 @@ export default function fbRoute({
             if (response && !response.error) {
                 console.log({response})
                 setUserID(response.id);
+
                 // setState userInfo and then we can populate it on the page
-                
                 setUserData({
                     name: response.name,
                     UID: response.id,
                     birthday: response.birthday,
                     email: response.email,
                     gender: response.gender,
-                    hometown: response.hometown.name,
+                    hometown: response.hometown?.name,
                     inspirationalPeople: response.inspirational_people,
                     favoriteAthletes: response.favorite_athletes,
                     favoriteTeams: response.favorite_teams,
                     languages: response.languages,
                     link: response.link,
                     profilePicture: {
-                        height: response.picture.data.height,
-                        width: response.picture.data.height,
-                        url: response.picture.data.url,
+                        height: response.picture?.data?.height,
+                        width: response.picture?.data?.height,
+                        url: response.picture?.data?.url,
                     },
                     significantOther: response.significant_other,
                     sports: response.sports
@@ -173,10 +175,11 @@ export default function fbRoute({
         <FbSdkScriptContext.Provider value={{ isReady, hasLoaded }}>
             {hasLoaded && isReady && (
                 <>
-                        <Button variant="outlined" onClick={OnLogOn}>Log into FB</Button>
-                        <Button variant="outlined" onClick={OnLogOut}>Log out FB</Button>
+                        <Button variant="contained" startIcon={<PersonSearchIcon />} onClick={OnLogOn}>Get your Public Info</Button>
+                        <Button variant="outlined" startIcon={<FacebookIcon />} onClick={OnLogOut}>Lout out of Facebook</Button>
                         {isLoggedIn && userData && (
                             <>
+                                {/*TODO create public information card that looks nice*/}
                                 <p> Your personal public data: </p>
                                 {userData.name}
                                 {userData.UID}
