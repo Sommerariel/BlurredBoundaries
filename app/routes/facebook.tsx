@@ -5,7 +5,39 @@ import {
     useEffect, 
   } from 'react';
 import Button from '@mui/material/Button';
-import { useFetcher } from "@remix-run/react";
+
+export type ProfilePicture = {
+    height: string;
+    width: string;
+    url: string;
+};
+
+export type GeneralKeyPair = {
+    [key:string]: string;
+}
+
+export type User = {
+    name?: string;
+    id?: string;
+}
+
+// types returned from https://developers.facebook.com/docs/graph-api/reference/user with additional typings for easier reading
+export type FBUser = {
+    name?: string;
+    UID?: string;
+    birthday?: string;
+    email?: string;
+    gender?: string;
+    hometown?: string;
+    inspirationalPeople?: GeneralKeyPair[];
+    favoriteAthletes?: GeneralKeyPair[];
+    favoriteTeams?: GeneralKeyPair[];
+    languages?: GeneralKeyPair[];
+    link?: string;
+    profilePicture?: ProfilePicture;
+    significantOther?: User;
+    sports?: GeneralKeyPair[];
+};
 
 // Context.
 export const FbSdkScriptContext = createContext({});
@@ -18,12 +50,11 @@ export default function fbRoute({
     xfbml = true,
     version = 'v8.0',
   }) {
-    const fetcher = useFetcher();
-
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [userID, setUserID] = useState(undefined);
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState<FBUser>({});
+    const [isLoggedIn, setLogInState] = useState(false);
 
     /**
    * Extra security measure to check if the script has
@@ -63,39 +94,39 @@ export default function fbRoute({
             setIsReady(true)
         }
         if (userID) {
-            console.log('made it here')
             // https://developers.facebook.com/docs/graph-api/reference/user
-            FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,meeting_for,quotes,relationship_status,significant_other,sports,picture.type(large)'}, function(response) {
+            // fetch all the fields that we have available to use publically 
+            FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,quotes,significant_other,sports,picture.type(large)'}, function(response) {
                 console.log(response);
             });
         }
     }, [hasLoaded, userID]);
 
     const OnLogOn = () => {
-        console.log("clicked");
+
         FB.getLoginStatus(function(response) {
-            console.log("fb log in status")
-            console.log({response});
+            if (response.status === 'connected') {
+                // check to see if we are already logged in
+                setLogInState(true);
+            }
         });
+
         FB.login(function(response) {
             // handle the response
             if (response.status === 'connected') {
-                // Logged Facebook.
-                console.log("logged in ")
+                // Logged into Facebook.
+                setLogInState(true);
                 getUserInfo();
               } else {
                 // user did not allow log in
-                console.log("not logged in")
               }
-              console.log({response})
           }, {scope: 'public_profile,email'});
     }
     
     const OnLogOut = () => {
         FB.logout(function(response) {
             // Person is now logged out
-            console.log("logged out!!!")
-            console.log({response})
+            setLogInState(true);
          });
          FB.getLoginStatus(function(response) {
             console.log("fb log in status")
@@ -106,16 +137,32 @@ export default function fbRoute({
     const getUserInfo = () => {
         FB.api('/me', function(response: any) 
         {
-            // if (response && !response.error) {
+            if (response && !response.error) {
                 console.log({response})
-                console.log(`Welcome ${response.name}: Your UID is ${response.id}`); 
                 setUserID(response.id);
                 // setState userInfo and then we can populate it on the page
+                
                 setUserData({
                     name: response.name,
                     UID: response.id,
+                    birthday: response.birthday,
+                    email: response.email,
+                    gender: response.gender,
+                    hometown: response.hometown.name,
+                    inspirationalPeople: response.inspirational_people,
+                    favoriteAthletes: response.favorite_athletes,
+                    favoriteTeams: response.favorite_teams,
+                    languages: response.languages,
+                    link: response.link,
+                    profilePicture: {
+                        height: response.picture.data.height,
+                        width: response.picture.data.height,
+                        url: response.picture.data.url,
+                    },
+                    significantOther: response.significant_other,
+                    sports: response.sports
                 })
-            // }
+            }
         });
     }
     
@@ -128,7 +175,7 @@ export default function fbRoute({
                 <>
                         <Button variant="outlined" onClick={OnLogOn}>Log into FB</Button>
                         <Button variant="outlined" onClick={OnLogOut}>Log out FB</Button>
-                        {userData && (
+                        {isLoggedIn && userData && (
                             <>
                                 <p> Your personal public data: </p>
                                 {userData.name}
