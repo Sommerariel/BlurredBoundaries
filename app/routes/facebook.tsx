@@ -51,7 +51,7 @@ export default function fbRoute({
     autoLogAppEvents = true,
     xfbml = true,
     version = 'v8.0',
-  }) {
+  }): JSX.Element {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [userID, setUserID] = useState(undefined);

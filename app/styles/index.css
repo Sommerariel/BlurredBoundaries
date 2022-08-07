@@ -7,3 +7,7 @@ body {
       rgba(58, 13, 85, 1) 100%
     );
   }
+
+  a {
+    color:white;
+  }
