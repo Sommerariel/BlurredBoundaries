@@ -22,6 +22,8 @@ export default function fbRoute({
 
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
+    const [userID, setUserID] = useState(undefined);
+    const [userData, setUserData] = useState({});
 
     /**
    * Extra security measure to check if the script has
@@ -46,28 +48,28 @@ export default function fbRoute({
     };
 
     useEffect(() => {
+
         if (!scriptAlreadyExists()) {
             appendSdkScript()
         }
-    }, []);
 
-    /**
-     * Whenever the script has loaded initialize the
-     * FB SDK with the init method. This will then set
-     * the isReady state to true and passes that
-     * through the context to the consumers.
-     */
-    useEffect(() => {
-    if (hasLoaded === true) {
-        FB.init({
-        appId: '797474598290630',
-        autoLogAppEvents,
-        xfbml,
-        version 
-        })
-        setIsReady(true)
-    }
-    }, [hasLoaded]);
+        if (hasLoaded === true) {
+            FB.init({
+            appId: '797474598290630',
+            autoLogAppEvents,
+            xfbml,
+            version 
+            })
+            setIsReady(true)
+        }
+        if (userID) {
+            console.log('made it here')
+            // https://developers.facebook.com/docs/graph-api/reference/user
+            FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,meeting_for,quotes,relationship_status,significant_other,sports,picture.type(large)'}, function(response) {
+                console.log(response);
+            });
+        }
+    }, [hasLoaded, userID]);
 
     const OnLogOn = () => {
         console.log("clicked");
@@ -80,6 +82,7 @@ export default function fbRoute({
             if (response.status === 'connected') {
                 // Logged Facebook.
                 console.log("logged in ")
+                getUserInfo();
               } else {
                 // user did not allow log in
                 console.log("not logged in")
@@ -100,6 +103,24 @@ export default function fbRoute({
         });
     }
     
+    const getUserInfo = () => {
+        FB.api('/me', function(response: any) 
+        {
+            // if (response && !response.error) {
+                console.log({response})
+                console.log(`Welcome ${response.name}: Your UID is ${response.id}`); 
+                setUserID(response.id);
+                // setState userInfo and then we can populate it on the page
+                setUserData({
+                    name: response.name,
+                    UID: response.id,
+                })
+            // }
+        });
+    }
+    
+
+
 
     return (
         <FbSdkScriptContext.Provider value={{ isReady, hasLoaded }}>
@@ -107,11 +128,13 @@ export default function fbRoute({
                 <>
                         <Button variant="outlined" onClick={OnLogOn}>Log into FB</Button>
                         <Button variant="outlined" onClick={OnLogOut}>Log out FB</Button>
-                        {fetcher.type === "done" ? (
-                            fetcher.data.ok ? (
-                                <p> Your personal data: </p>
-                            ) : null
-                        ) : null }
+                        {userData && (
+                            <>
+                                <p> Your personal public data: </p>
+                                {userData.name}
+                                {userData.UID}
+                            </>
+                        )}
                 </>
             )}
 
