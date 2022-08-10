@@ -39,7 +39,7 @@ export default function Sidebar() {
               <ListItemIcon>
                   <FacebookIcon />
               </ListItemIcon>
-              <Link to="facebook">Facebook</Link> 
+              <Link to="/facebook">Facebook</Link> 
             </ListItemButton>
           </ListItem>
           <ListItem key="instagram">
@@ -47,7 +47,7 @@ export default function Sidebar() {
               <ListItemIcon>
                   <InstagramIcon />
               </ListItemIcon>
-              <Link to="instagram">Instagram</Link>
+              <Link to="/instagram">Instagram</Link>
             </ListItemButton>
           </ListItem>
           <ListItem  key="google">
@@ -55,7 +55,7 @@ export default function Sidebar() {
               <ListItemIcon>
                   <GoogleIcon />
               </ListItemIcon>
-              <Link to="google">Google</Link>
+              <Link to="/google">Google</Link>
             </ListItemButton>
           </ListItem>
           <ListItem  key="image">
@@ -63,7 +63,7 @@ export default function Sidebar() {
               <ListItemIcon>
                   <PhotoIcon />
               </ListItemIcon>
-              <Link to="image">Image Info</Link>
+              <Link to="/image">Image Info</Link>
             </ListItemButton>
           </ListItem>
           <Divider />
@@ -72,7 +72,7 @@ export default function Sidebar() {
               <ListItemIcon>
                   <PolicyIcon />
               </ListItemIcon>
-              <Link to="privacy">Privacy Policy</Link>
+              <Link to="/privacy">Privacy Policy</Link>
             </ListItemButton>
           </ListItem>
         </List>
