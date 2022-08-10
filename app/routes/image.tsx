@@ -7,15 +7,21 @@ import Button from '@mui/material/Button';
 import Sidebar from "~/components/sidebar";
 import ExifReader from 'exifreader';
 
-
 import PhotoIcon from '@mui/icons-material/Photo';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
+export type ValueDescription = {
+    value?: number | string;
+    description?: string;
+};
+
+export type ExifData = ExifReader.Tags & ExifReader.XmpTags & ExifReader.IccTags;
 
 export default function imageRoute(): JSX.Element  {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [efixData, setExifData] = useState<ExifData>();
 
     const scriptAlreadyExists = () => document.querySelector('script#exif-js') !== null;
 
@@ -43,20 +49,16 @@ export default function imageRoute(): JSX.Element  {
 
     const onUpload = (event: any ) => {
         setSelectedImage(event.target.files[0]);
-        console.log("file",event.target.files[0])
-    }
-    console.log({selectedImage})
-    let filename = '';
-    let exifData = '';
-    let tags;
+    };
+
     const  loadImage = async(selectedImage: any) => {
-        tags = await ExifReader.load(selectedImage);  
-        console.log({tags});    
-        // TODO populate obj of tag data
-    }
+        const tags = await ExifReader.load(selectedImage);  
+        setExifData({...tags});
+    };
+
     if (selectedImage) {
         loadImage(selectedImage);
-    }
+    };
 
 
     return (
@@ -71,16 +73,16 @@ export default function imageRoute(): JSX.Element  {
                         </Button>
                         {selectedImage && (
                             <div>
-                            <img alt="not fount" width={"250px"} src={URL.createObjectURL(selectedImage)} />
-                            <br />
-                            <Button 
-                                variant="outlined" 
-                                startIcon={<DeleteForeverIcon />}
-                                onClick={()=>setSelectedImage(null)}
-                            >
-                                Remove
-                            </Button>
-                            <pre id="allMetaDataSpan"></pre>
+                                <img alt="not fount" width={"250px"} src={URL.createObjectURL(selectedImage)} />
+                                <br />
+                                <Button 
+                                    variant="outlined" 
+                                    startIcon={<DeleteForeverIcon />}
+                                    onClick={()=>setSelectedImage(null)}
+                                >
+                                    Remove
+                                </Button>
+                                <pre id="allMetaDataSpan"></pre>
                             </div>
                         )}
                     </>
