@@ -45,20 +45,22 @@ export default function imageRoute(): JSX.Element  {
             setIsReady(true);
         }
 
-    }, [hasLoaded]);
+        if (selectedImage) {
+            loadImage(selectedImage);
+            console.log('how many times does this run?')
+        };
+
+    }, [hasLoaded, selectedImage]);
 
     const onUpload = (event: any ) => {
         setSelectedImage(event.target.files[0]);
     };
 
-    const  loadImage = async(selectedImage: any) => {
+    const loadImage = async(selectedImage: any) => {
         const tags = await ExifReader.load(selectedImage);  
         setExifData({...tags});
     };
-
-    if (selectedImage) {
-        loadImage(selectedImage);
-    };
+   
 
 
     return (
