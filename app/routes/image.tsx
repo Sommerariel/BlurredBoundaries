@@ -5,21 +5,17 @@ import {
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Sidebar from "~/components/sidebar";
+import ExifReader from 'exifreader';
 
 
 import PhotoIcon from '@mui/icons-material/Photo';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-export default function imagemRoute(): JSX.Element  {
+
+export default function imageRoute(): JSX.Element  {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-
-
-    const fs = require('fs');
-    const piexif = require('piexifjs'); 
-
-
 
     const scriptAlreadyExists = () => document.querySelector('script#exif-js') !== null;
 
@@ -46,11 +42,21 @@ export default function imagemRoute(): JSX.Element  {
     }, [hasLoaded]);
 
     const onUpload = (event: any ) => {
-        console.log("uplaoded")
         setSelectedImage(event.target.files[0]);
-        console.log({selectedImage})
+        console.log("file",event.target.files[0])
     }
-
+    console.log({selectedImage})
+    let filename = '';
+    let exifData = '';
+    let tags;
+    const  loadImage = async(selectedImage: any) => {
+        tags = await ExifReader.load(selectedImage);  
+        console.log({tags});    
+        // TODO populate obj of tag data
+    }
+    if (selectedImage) {
+        loadImage(selectedImage);
+    }
 
 
     return (
@@ -74,13 +80,12 @@ export default function imagemRoute(): JSX.Element  {
                             >
                                 Remove
                             </Button>
+                            <pre id="allMetaDataSpan"></pre>
                             </div>
                         )}
                     </>
                 )}
             </Box>
-
-            Image reading
         </>
     )
 };
