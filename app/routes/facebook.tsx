@@ -4,7 +4,10 @@ import {
     useState, 
     useEffect, 
   } from 'react';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Sidebar from "~/components/sidebar";
+
 import FacebookIcon from '@mui/icons-material/Facebook';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
@@ -173,21 +176,24 @@ export default function fbRoute({
 
     return (
         <FbSdkScriptContext.Provider value={{ isReady, hasLoaded }}>
-            {hasLoaded && isReady && (
-                <>
-                        <Button variant="contained" startIcon={<PersonSearchIcon />} onClick={OnLogOn}>Get your Public Info</Button>
-                        <Button variant="outlined" startIcon={<FacebookIcon />} onClick={OnLogOut}>Lout out of Facebook</Button>
-                        {isLoggedIn && userData && (
-                            <>
-                                {/*TODO create public information card that looks nice*/}
-                                <p> Your personal public data: </p>
-                                {userData.name}
-                                {userData.UID}
-                            </>
-                        )}
-                </>
-            )}
-
+            <Box sx={{ display: 'flex' }}>
+                <Sidebar />
+                {hasLoaded && isReady && (
+                    <>
+                            <Button variant="contained" startIcon={<PersonSearchIcon />} onClick={OnLogOn}>Get your Public Info</Button>
+                            <Button variant="outlined" startIcon={<FacebookIcon />} onClick={OnLogOut}>Lout out of Facebook</Button>
+                            {isLoggedIn && userData && (
+                                <>
+                                    {/*TODO create public information card that looks nice*/}
+                                    <p> Your personal public data: </p>
+                                    {userData.name}
+                                    {userData.UID}
+                                </>
+                            )}
+                    </>
+                )}
+            </Box>
+            
         </FbSdkScriptContext.Provider>
     );
 }

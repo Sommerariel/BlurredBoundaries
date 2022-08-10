@@ -17,6 +17,8 @@
     "@remix-run/react": "^1.6.5",
     "@types/facebook-js-sdk": "^3.3.5",
     "cross-env": "^7.0.3",
+    "exif-js": "^2.3.0",
+    "piexifjs": "^1.0.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
