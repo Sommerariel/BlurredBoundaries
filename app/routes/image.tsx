@@ -15,7 +15,7 @@ export type ValueDescription = {
     description?: string;
 };
 
-export type ExifData = ExifReader.Tags & ExifReader.XmpTags & ExifReader.IccTags;
+export type ExifData = ExifReader.ExpandedTags;
 
 export default function imageRoute(): JSX.Element  {
     const [hasLoaded, setHasLoaded] = useState(false);
@@ -57,10 +57,11 @@ export default function imageRoute(): JSX.Element  {
     };
 
     const loadImage = async(selectedImage: any) => {
-        const tags = await ExifReader.load(selectedImage);  
+        const tags = await ExifReader.load(selectedImage, {expanded: true});  
         setExifData({...tags});
     };
    
+    console.log({efixData})
 
 
     return (
