@@ -30,7 +30,7 @@ export const loader: LoaderFunction = async({ request }) => {
         })
     };
     const res = await fetch('https://api.instagram.com/oauth/access_token', requestOptions);
-    return json(res.json());
+    return res;
 }
 
 export default function instagramRoute(): JSX.Element  {
