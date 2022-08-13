@@ -18,18 +18,17 @@ const redirectUri = 'https://the-awesome-sommerariel-site.netlify.app/instagram'
 export const loader: LoaderFunction = async({ request }) => {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
-    const requestOptions = {
+    const form = new FormData();
+    form.append('client_id', String(process.env.INSTAGRAM_APP_ID));
+    form.append('client_secret', String(process.env.INSTAGRAM_SECRET));
+    form.append('grant_type', 'authorization_code');
+    form.append('redirect_uri', String(redirectUri));
+    form.append('code', String(code));
+    
+    const res = await fetch('https://api.instagram.com/oauth/access_token', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': redirectUri },
-        body: JSON.stringify({ 
-            client_id: process.env.INSTAGRAM_APP_ID,
-            client_secret: process.env.INSTAGRAM_SECRET, 
-            grant_type: 'authorization_code',
-            redirect_uri: {redirectUri}, 
-            code: {code}
-        })
-    };
-    const res = await fetch('https://api.instagram.com/oauth/access_token', requestOptions);
+        body: form
+    });
     return res;
 }
 
