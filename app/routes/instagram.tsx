@@ -41,6 +41,8 @@ export default function instagramRoute(): JSX.Element  {
     const data = useLoaderData();
 
     console.log({data})
+    console.log("access token", data.access_token);
+    console.log(" user id", data.user_id);
 
 
     useEffect (() => {
