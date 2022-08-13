@@ -79,9 +79,11 @@ export default function fbRoute({
             appendSdkScript()
         }
 
+
+
         if (hasLoaded === true) {
             FB.init({
-            appId: '797474598290630',
+            appId: (window as any).ENV.FACEBOOK_APP_ID,
             autoLogAppEvents,
             xfbml,
             version 
