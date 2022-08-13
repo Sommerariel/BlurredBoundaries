@@ -4,6 +4,8 @@ import {
   } from 'react';
 
 import { useSearchParams } from "@remix-run/react";
+import type { ActionFunction } from "@remix-run/node";
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
@@ -15,6 +17,8 @@ const appId = '448646527197070';
 const appS = '0e8ba0033b150898c74fd8996d6a17a1';
 const redirectUri = 'https://the-awesome-sommerariel-site.netlify.app/instagram';
 
+
+
 export default function instagramRoute(): JSX.Element  {
     const [isReady, setIsReady] = useState(false);
     const [code, setCode] = useState<string | null>(null);
@@ -25,9 +29,9 @@ export default function instagramRoute(): JSX.Element  {
     const getToken = () => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': redirectUri },
             body: JSON.stringify({ 
-                client_id: appId, 
+                client_id: appId,
                 client_secret: appS, 
                 grant_type: 'authorization_code',
                 redirect_uri: {redirectUri}, 

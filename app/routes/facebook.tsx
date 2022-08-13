@@ -1,9 +1,4 @@
-import { 
-    createContext, 
-    useContext, 
-    useState, 
-    useEffect, 
-  } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Sidebar from "~/components/sidebar";
@@ -44,11 +39,6 @@ export type FBUser = {
     sports?: GeneralKeyPair[];
 };
 
-// Context.
-export const FbSdkScriptContext = createContext({});
-
-// Create a custom hook to use the context.
-export const useFbSdkScriptContext = () => useContext(FbSdkScriptContext)
 
 export default function fbRoute({
     autoLogAppEvents = true,
@@ -175,7 +165,6 @@ export default function fbRoute({
 
 
     return (
-        <FbSdkScriptContext.Provider value={{ isReady, hasLoaded }}>
             <Box sx={{ display: 'flex' }}>
                 <Sidebar />
                 {hasLoaded && isReady && (
@@ -194,6 +183,5 @@ export default function fbRoute({
                 )}
             </Box>
             
-        </FbSdkScriptContext.Provider>
     );
 }
