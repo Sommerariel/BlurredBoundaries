@@ -29,8 +29,8 @@ export default function Sidebar() {
           },
         }}
       >
-        <Box>
-          Blurred Boundaries
+        <Box sx={{ display: 'flex', backgroundColor:'#131212' }}>
+          <Link to="/"> Blurred Boundaries</Link> 
         </Box>
         <Divider />
         <List>
@@ -50,14 +50,14 @@ export default function Sidebar() {
               <Link to="/instagram">Instagram</Link>
             </ListItemButton>
           </ListItem>
-          <ListItem  key="google">
+          {/* <ListItem  key="google">
             <ListItemButton>
               <ListItemIcon>
                   <GoogleIcon />
               </ListItemIcon>
               <Link to="/google">Google</Link>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem  key="image">
             <ListItemButton>
               <ListItemIcon>

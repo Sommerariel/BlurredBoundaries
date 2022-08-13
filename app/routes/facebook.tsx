@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
+import type { LinksFunction } from "@remix-run/node"; 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Sidebar from "~/components/sidebar";
 
 import FacebookIcon from '@mui/icons-material/Facebook';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+
+import styles from "../styles/index.css";
+
+export const links: LinksFunction = () => {
+  return [
+    { rel: "stylesheet", href: styles },
+  ];
+};
 
 export type ProfilePicture = {
     height: string;
