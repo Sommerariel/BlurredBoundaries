@@ -13,6 +13,10 @@ import Sidebar from "~/components/sidebar";
 
 import InstagramIcon from '@mui/icons-material/Instagram';
 
+export type AccessToken = {
+    accessToken: string;
+};
+
 const redirectUri = 'https://the-awesome-sommerariel-site.netlify.app/instagram';
 
 export const loader: LoaderFunction = async({ request }) => {
@@ -34,27 +38,37 @@ export const loader: LoaderFunction = async({ request }) => {
 
 export default function instagramRoute(): JSX.Element  {
 
-    const [isReady, setIsReady] = useState(false);
     const [appId, setAppId] = useState();
+    // const [instaData, setInstaData] = useState<any>();
 
     const data = useLoaderData();
 
     console.log({data})
     console.log("access token", data.access_token);
     console.log(" user id", data.user_id);
-
+    const getUserInfo = async ({accessToken}: AccessToken) => {
+        const fields='id,username,media_count,acount_type';
+        fetch(`https://graph.instagram.com/me?fields=${fields}&access_token=${accessToken}`)
+        .then((response) => response.json())
+        .then((data) => console.log("response data", data));
+        // console.log({res})
+        // setInstaData({...res});
+    }
 
     useEffect (() => {
         setAppId((window as any).ENV.INSTAGRAM_APP_ID);
-        // const appS = (window as any).ENV.INSTAGRAM_SECRET;
-    }, []);
+        if (data.access_token) {
+            getUserInfo({accessToken: data.access_token});
+        }
+    }, [data, getUserInfo, appId, setAppId]);
 
 
     const onSearch = () => {
         const url = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${redirectUri}&scope=user_profile,user_media&response_type=code`;
-        window.open(url, '_blank', 'noopener,noreferrer');
+        window.open(url, 'noopener,noreferrer');
     }
 
+    // console.log({instaData})
     return (
         <>
             <Box sx={{ display: 'flex' }}>
