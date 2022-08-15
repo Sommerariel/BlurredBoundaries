@@ -47,7 +47,7 @@ export default function instagramRoute(): JSX.Element  {
     console.log("access token", data.access_token);
     console.log(" user id", data.user_id);
     const getUserInfo = async ({accessToken}: AccessToken) => {
-        const fields='id,username,media_count,acount_type';
+        const fields='id,username,media_count,account_type';
         fetch(`https://graph.instagram.com/me?fields=${fields}&access_token=${accessToken}`)
         .then((response) => response.json())
         .then((data) => console.log("response data", data));

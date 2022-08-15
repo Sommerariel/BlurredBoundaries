@@ -79,7 +79,7 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
         </List>
-        <Box sx={{display: 'flex', p:2, color: 'white'}}>Copywright 2022 Sommer Shearer</Box>
+        <div>Copywright {new Date().getFullYear} Sommer Shearer</div>
       </Drawer>
     );
 }

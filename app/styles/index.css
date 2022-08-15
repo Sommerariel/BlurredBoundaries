@@ -60,10 +60,10 @@
 	
 html,
 body {
-	background: #131212;
+	background: #363434;
 	color: #85ffe7;
 	font-size: 64.5%;
-	font-size: 1.4em;
+	font-size: 1.2rem;
 	font-family: 'VT323', Courier;
 	height: 100%;
 	margin: 0;
@@ -71,7 +71,7 @@ body {
 }
 
 h1, h2, h3 h4, h5, h6 { 
-	font-weight: normal;
+	font-weight: bold;
 	margin: 0;
 	text-transform: uppercase;
 }
@@ -226,7 +226,7 @@ textarea {
 	display: block;
 	float: left;
 	font-family: 'VT323', Courier;
-	font-size: 1.2em;
+	font-size: 1.2rem;
 	position: relative;
 	width: 80%;
 	z-index: 10
