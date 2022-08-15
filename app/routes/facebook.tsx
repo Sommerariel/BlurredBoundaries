@@ -101,6 +101,24 @@ export default function fbRoute({
             // https://developers.facebook.com/docs/graph-api/reference/user
             // fetch all the fields that we have available to use publically 
             FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,quotes,significant_other,sports,picture.type(large)'}, function(response) {
+                setUserData({
+                    birthday: response.birthday,
+                    email: response.email,
+                    gender: response.gender,
+                    hometown: response.hometown?.name,
+                    inspirationalPeople: response.inspirational_people,
+                    favoriteAthletes: response.favorite_athletes,
+                    favoriteTeams: response.favorite_teams,
+                    languages: response.languages,
+                    link: response.link,
+                    profilePicture: {
+                        height: response.picture?.data?.height,
+                        width: response.picture?.data?.height,
+                        url: response.picture?.data?.url,
+                    },
+                    significantOther: response.significant_other,
+                    sports: response.sports
+                });
                 console.log(response);
             });
         }
@@ -134,7 +152,7 @@ export default function fbRoute({
          });
          FB.getLoginStatus(function(response) {
             console.log("fb log in status")
-            console.log({response});
+            // console.log({response});
         });
     }
     
@@ -142,29 +160,13 @@ export default function fbRoute({
         FB.api('/me', function(response: any) 
         {
             if (response && !response.error) {
-                console.log({response})
+                // console.log({response})
                 setUserID(response.id);
 
                 // setState userInfo and then we can populate it on the page
                 setUserData({
                     name: response.name,
                     UID: response.id,
-                    birthday: response.birthday,
-                    email: response.email,
-                    gender: response.gender,
-                    hometown: response.hometown?.name,
-                    inspirationalPeople: response.inspirational_people,
-                    favoriteAthletes: response.favorite_athletes,
-                    favoriteTeams: response.favorite_teams,
-                    languages: response.languages,
-                    link: response.link,
-                    profilePicture: {
-                        height: response.picture?.data?.height,
-                        width: response.picture?.data?.height,
-                        url: response.picture?.data?.url,
-                    },
-                    significantOther: response.significant_other,
-                    sports: response.sports
                 })
             }
         });
@@ -174,23 +176,86 @@ export default function fbRoute({
 
 
     return (
-            <Box sx={{ display: 'flex' }}>
+        <>
+            <div className="overlay"></div>
+            <div className="scanline"></div>
+            <Box sx={{ display: 'flex', backgroundColor: '#363434' }}  className="wrapper">
                 <Sidebar />
                 {hasLoaded && isReady && (
-                    <>
-                            <Button variant="contained" startIcon={<PersonSearchIcon />} onClick={OnLogOn}>Get your Public Info</Button>
-                            <Button variant="outlined" startIcon={<FacebookIcon />} onClick={OnLogOut}>Lout out of Facebook</Button>
+                    <Box 
+                    component="main"  
+                    sx={{ 
+                        flexGrow: 1, 
+                        p: 3, 
+                        zIndex: '1200', 
+                        position: 'inherit' 
+                    }}  
+                    className="content"
+                    >
+                            <Button
+                                variant="contained" 
+                                sx={{
+                                    backgroundColor: '#85ffe7', 
+                                    color: '#ff38a9', 
+                                    fontFamily: `'VT323', Courier`, 
+                                    margin: 2,
+                                    '& span': {
+                                        animation: 'none',
+                                    },
+                                    '&:hover': {
+                                        backgroundColor: '#ff38a9',
+                                        color: '#85ffe7'
+                                    }
+                                }}
+                                startIcon={<PersonSearchIcon />} 
+                                onClick={OnLogOn}
+                            >
+                                Get your Public Info
+                            </Button>
+                            <Button 
+                                variant="outlined" 
+                                sx={{
+                                    color: '#85ffe7', 
+                                    fontFamily: `'VT323', Courier`, 
+                                    margin: 2,
+                                    '& span': {
+                                        animation: 'none',
+                                    }
+                                }}
+                                startIcon={<FacebookIcon />} 
+                                onClick={OnLogOut}
+                            >
+                                    Log out out of Facebook
+                            </Button>
                             {isLoggedIn && userData && (
-                                <>
+                                <Box>
                                     {/*TODO create public information card that looks nice*/}
                                     <p> Your personal public data: </p>
-                                    {userData.name}
-                                    {userData.UID}
-                                </>
+                                    <p>name: {userData.name}</p>
+                                    <p>UID: {userData.UID}</p>
+                                    <p>birthday: {userData.birthday}</p>
+                                    <p>email: {userData.email}</p>
+                                    <p>gender: {userData.gender}</p>
+                                    <p>hometown: {userData.hometown}</p>
+                                    <p>inspirationalPeople: {userData.inspirationalPeople?.forEach((person) => person)}</p>
+                                    <p>favoriteAthletes: {userData.favoriteAthletes?.forEach((person) => person)}</p>
+                                    <p>favoriteTeams: {userData.favoriteTeams?.forEach((team) => team)}</p>
+                                    <p>languages: {userData.languages?.forEach((language) => language)}</p>
+                                    <p>link: {userData.link}</p>
+                                    <p>significantOther: {userData.significantOther}</p>
+                                    <p>sports: {userData.sports?.forEach((sport) => sport)}</p>
+
+                                    {/* profilePicture: {
+                                        height: response.picture?.data?.height,
+                                        width: response.picture?.data?.height,
+                                        url: response.picture?.data?.url,
+                                    } */}
+                                </Box>
                             )}
-                    </>
+                    </Box>
                 )}
             </Box>
-            
+        </>
+
     );
 }

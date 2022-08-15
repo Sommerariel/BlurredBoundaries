@@ -10,7 +10,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 // import GoogleIcon from '@mui/icons-material/Google';
-import PolicyIcon from '@mui/icons-material/Policy';
 import PhotoIcon from '@mui/icons-material/Photo';
 
 const drawerWidth = 240;
