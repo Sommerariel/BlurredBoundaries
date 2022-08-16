@@ -47,7 +47,7 @@ export const loader: LoaderFunction = async({ request }) => {
 export default function instagramRoute(): JSX.Element  {
 
     const [appId, setAppId] = useState();
-    // const [instaData, setInstaData] = useState<any>();
+    const [instaData, setInstaData] = useState<any>();
 
     const data = useLoaderData();
 
@@ -58,9 +58,11 @@ export default function instagramRoute(): JSX.Element  {
         const fields='id,username,media_count,account_type';
         fetch(`https://graph.instagram.com/me?fields=${fields}&access_token=${accessToken}`)
         .then((response) => response.json())
-        .then((data) => console.log("response data", data));
+        .then((data) => {
+            console.log("response data", data)
+            setInstaData({...data});
+        })
         // console.log({res})
-        // setInstaData({...res});
     }
 
     useEffect (() => {
@@ -68,7 +70,7 @@ export default function instagramRoute(): JSX.Element  {
         if (data.access_token) {
             getUserInfo({accessToken: data.access_token});
         }
-    }, [data, getUserInfo, appId, setAppId]);
+    }, [data.access_token, appId ]);
 
 
     const onSearch = () => {
@@ -76,7 +78,7 @@ export default function instagramRoute(): JSX.Element  {
         window.open(url, 'noopener,noreferrer');
     }
 
-    // console.log({instaData})
+    console.log({instaData})
     return (
         <>
             <div className="overlay"></div>
@@ -93,7 +95,25 @@ export default function instagramRoute(): JSX.Element  {
                     }}  
                     className="content"
                 >
-                    <Button variant="contained" startIcon={<InstagramIcon />} onClick={onSearch}>Get your Public Info</Button>
+                    <Button  
+                        variant="contained" 
+                        sx={{
+                            backgroundColor: '#85ffe7', 
+                            color: '#ff38a9', 
+                            fontFamily: `'VT323', Courier`, 
+                            margin: 2,
+                            '& span': {
+                                animation: 'none',
+                            },
+                            '&:hover': {
+                                backgroundColor: '#ff38a9',
+                                color: '#85ffe7'
+                            }
+                        }} 
+                        startIcon={<InstagramIcon />} 
+                        onClick={onSearch}>
+                            Get your Public Info
+                        </Button>
                 </Box>
             </Box>
         </>

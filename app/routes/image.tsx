@@ -65,7 +65,7 @@ export default function imageRoute(): JSX.Element  {
         };
 
         if (exifData) {
-            toArray(exifData);
+            // toArray(exifData);
         }
 
     }, [hasLoaded, selectedImage, exifData?.file?.["Image Height"]?.value]);
@@ -86,26 +86,45 @@ export default function imageRoute(): JSX.Element  {
     //     for (const prop in obj) {
     //         const value = obj[prop];
     //         if (typeof value === 'object') {
-    //             result.push(toArray(<p>{prop}: {value}</p>)); // <- recursive call
+    //             result.push(toArray(value)); // <- recursive call
     //         }
     //         else {
-    //             result.push(value);
+    //             result.push(`${prop}: ${value}`);
     //         }
     //     }
-    //     setDisplayData(result);
+    //     setDisplayData({
+    //         ...result,
+    //         ...exifData,
+    //     });
+    //     console.log({result})
     // }
 
-    const toArray = (obj: any) => {
-        const result = [];
-        for (const [key, value] of Object.entries(obj)) {
-            console.log({value})
-            result.push(`${key}: ${value}`);
-          }
-        setDisplayData(result);
-        return result;
-    }
+    // this doesn't do nested :(
 
-    // const memoizedValue = useMemo(() => toArray(exifData), [exifData]);
+    // const toArray = (obj: any) => {
+    //     const result = [];
+    //     for (const [key, value] of Object.entries(obj)) {
+    //         console.log(`${key}: ${value}`)
+    //         console.log({key})
+    //         // console.log({value})
+    //         console.log("typeof", typeof value)
+    //         if (typeof value === 'object') {
+    //             console.log("MEow")
+    //             console.log({value})
+    //             toArray(value);
+    //         }
+    //         if (value !== 'object') {
+    //             console.log("woof")
+    //             console.log({value})
+    //             result.push(`${key}: ${value}`);
+    //         } 
+
+    //     }
+    //     console.log({result})
+    //     setDisplayData(result);
+    //     return result;
+    // }
+
 
 
     return (

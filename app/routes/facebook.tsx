@@ -99,8 +99,9 @@ export default function fbRoute({
             })
             setIsReady(true)
         }
+        getAdditional();
 
-    }, [hasLoaded, userID, userData, setUserData, setHasLoaded]);
+    }, [hasLoaded, userID, userData?.UID]);
 
     const OnLogOn = () => {
 
@@ -148,31 +149,35 @@ export default function fbRoute({
                 })
             }
         });
+    }
 
+    const getAdditional = () => {
+        console.log('do we get here?')
+        console.log(userID)
         if (userID) {
+            console.log("did we make it here?")
             // https://developers.facebook.com/docs/graph-api/reference/user
             // fetch all the fields that we have available to use publically 
             FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,quotes,significant_other,sports,picture.type(large)'}, function(response: any) {
                 if (response && !response.error) {
                     setUserData({
-                        ...userData,
                         ...{
                             birthday: response.birthday,
-                        email: response.email,
-                        gender: response.gender,
-                        hometown: response.hometown?.name,
-                        inspirationalPeople: response.inspirational_people,
-                        favoriteAthletes: response.favorite_athletes,
-                        favoriteTeams: response.favorite_teams,
-                        languages: response.languages,
-                        link: response.link,
-                        profilePicture: {
-                            height: response.picture?.data?.height,
-                            width: response.picture?.data?.height,
-                            url: response.picture?.data?.url,
-                        },
-                        significantOther: response.significant_other,
-                        sports: response.sports
+                            email: response.email,
+                            gender: response.gender,
+                            hometown: response.hometown?.name,
+                            inspirationalPeople: response.inspirational_people,
+                            favoriteAthletes: response.favorite_athletes,
+                            favoriteTeams: response.favorite_teams,
+                            languages: response.languages,
+                            link: response.link,
+                            profilePicture: {
+                                height: response.picture?.data?.height,
+                                width: response.picture?.data?.height,
+                                url: response.picture?.data?.url,
+                            },
+                            significantOther: response.significant_other,
+                            sports: response.sports
                         }
                         
                     });
@@ -244,8 +249,6 @@ export default function fbRoute({
                                 <Box>
                                     {/*TODO create public information card that looks nice*/}
                                     <p> Your personal public data: </p>
-                                    <p>name: {userData.name}</p>
-                                    <p>UID: {userData.UID}</p>
                                     <p>birthday: {userData.birthday}</p>
                                     <p>email: {userData.email}</p>
                                     <p>gender: {userData.gender}</p>
@@ -254,7 +257,7 @@ export default function fbRoute({
                                     <p>favoriteAthletes: {userData.favoriteAthletes?.forEach((person) => person)}</p>
                                     <p>favoriteTeams: {userData.favoriteTeams?.forEach((team) => team)}</p>
                                     <p>languages: {userData.languages?.forEach((language) => language)}</p>
-                                    <p>link: {userData.link}</p>
+                                    <p>link: <a>{userData.link}</a></p>
                                     <p>significantOther: {userData.significantOther}</p>
                                     <p>sports: {userData.sports?.forEach((sport) => sport)}</p>
 

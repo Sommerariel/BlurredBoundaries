@@ -81,6 +81,7 @@ h4 b {
 a {
 	color: white;	
 	text-decoration: none;	
+  line-break: anywhere;
 }
 
 a:hover {
