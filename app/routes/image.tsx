@@ -1,14 +1,24 @@
 import { 
     useState, 
-    useEffect, 
+    useEffect,
+    useMemo, 
   } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Sidebar from "~/components/sidebar";
 import ExifReader from 'exifreader';
+import type { LinksFunction } from "@remix-run/node"; 
 
 import PhotoIcon from '@mui/icons-material/Photo';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+import styles from "../styles/index.css";
+
+export const links: LinksFunction = () => {
+  return [
+    { rel: "stylesheet", href: styles },
+  ];
+};
 
 export type ValueDescription = {
     value?: number | string;
@@ -21,7 +31,8 @@ export default function imageRoute(): JSX.Element  {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [efixData, setExifData] = useState<ExifData>();
+    const [exifData, setExifData] = useState<ExifData>();
+    const [displayData, setDisplayData] = useState<any>([]);
 
     const scriptAlreadyExists = () => document.querySelector('script#exif-js') !== null;
 
@@ -36,9 +47,12 @@ export default function imageRoute(): JSX.Element  {
         document.body.append(script)
     };
 
+
     useEffect (() => {
         if (!scriptAlreadyExists()) {
             appendSdkScript();
+        } else {
+            setHasLoaded(true);
         }
 
         if (hasLoaded === true) {
@@ -50,7 +64,11 @@ export default function imageRoute(): JSX.Element  {
             console.log('how many times does this run?')
         };
 
-    }, [hasLoaded, selectedImage]);
+        if (exifData) {
+            toArray(exifData);
+        }
+
+    }, [hasLoaded, selectedImage, exifData?.file?.["Image Height"]?.value]);
 
     const onUpload = (event: any ) => {
         setSelectedImage(event.target.files[0]);
@@ -61,34 +79,116 @@ export default function imageRoute(): JSX.Element  {
         setExifData({...tags});
     };
    
-    console.log({efixData})
+    console.log({exifData})
+
+    // const toArray = (obj: any) => {
+    //     const result = [];
+    //     for (const prop in obj) {
+    //         const value = obj[prop];
+    //         if (typeof value === 'object') {
+    //             result.push(toArray(<p>{prop}: {value}</p>)); // <- recursive call
+    //         }
+    //         else {
+    //             result.push(value);
+    //         }
+    //     }
+    //     setDisplayData(result);
+    // }
+
+    const toArray = (obj: any) => {
+        const result = [];
+        for (const [key, value] of Object.entries(obj)) {
+            console.log({value})
+            result.push(`${key}: ${value}`);
+          }
+        setDisplayData(result);
+        return result;
+    }
+
+    // const memoizedValue = useMemo(() => toArray(exifData), [exifData]);
 
 
     return (
         <>
-            <Box sx={{ display: 'flex' }}>
+            <div className="overlay"></div>
+            <div className="scanline"></div>        
+            <Box sx={{ display: 'flex', backgroundColor: '#363434' }}  className="wrapper">
                 <Sidebar />
                 {hasLoaded && isReady && (
-                    <>
-                        <Button variant="contained" component="label" startIcon={<PhotoIcon />}>
+                    <Box
+                        component="main"  
+                        sx={{ 
+                            display: 'flex',
+                            flexGrow: 1, 
+                            p: 3, 
+                            zIndex: '1200', 
+                            position: 'inherit' 
+                        }}  
+                        className="content"
+                    >
+                        <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column'}}>
+                        <Button 
+                            variant="contained"
+                            sx={{
+                                backgroundColor: '#85ffe7', 
+                                color: '#ff38a9', 
+                                fontFamily: `'VT323', Courier`, 
+                                width:'50%',
+                                margin: 2,
+                                '& span': {
+                                    animation: 'none',
+                                },
+                                '&:hover': {
+                                    backgroundColor: '#ff38a9',
+                                    color: '#85ffe7'
+                                }
+                            }}
+                            component="label" 
+                            startIcon={<PhotoIcon />}
+                        >
                             Check Photo Data
                             <input hidden accept="image/*" multiple type="file" onChange={onUpload}/>
                         </Button>
                         {selectedImage && (
-                            <div>
-                                <img alt="not fount" width={"250px"} src={URL.createObjectURL(selectedImage)} />
+                            <Box sx={{margin: '16px', display: 'flex', flexDirection: 'column'}}>
+                                <img alt="uploaded image" width={"250px"} src={URL.createObjectURL(selectedImage)} />
                                 <br />
                                 <Button 
                                     variant="outlined" 
+                                    sx={{
+                                        color: '#85ffe7', 
+                                        border: '1px solid #85ffe7',
+                                        fontFamily: `'VT323', Courier`, 
+                                        width: '50%',
+                                        margin: '16px 0',
+                                        '& span': {
+                                            animation: 'none',
+                                        },
+                                        '&:hover': {
+                                            color: '#ff38a9', 
+                                            border: '1px solid #ff38a9',
+                                        }
+                                    }}
                                     startIcon={<DeleteForeverIcon />}
                                     onClick={()=>setSelectedImage(null)}
                                 >
                                     Remove
                                 </Button>
                                 <pre id="allMetaDataSpan"></pre>
-                            </div>
+                            </Box>
                         )}
-                    </>
+                        </Box>
+
+                        <Box sx={{ width: '50%'}}>
+                            {exifData && (
+                                <>
+                                    <p>// Exif data</p>
+                                    {displayData}
+                                </>
+                            )}
+   
+                        </Box>
+                    </Box>
                 )}
             </Box>
         </>

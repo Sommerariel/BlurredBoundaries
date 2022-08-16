@@ -86,6 +86,8 @@ export default function fbRoute({
 
         if (!scriptAlreadyExists()) {
             appendSdkScript()
+        } else {
+            setHasLoaded(true);
         }
 
         if (hasLoaded === true) {
@@ -97,32 +99,8 @@ export default function fbRoute({
             })
             setIsReady(true)
         }
-        if (userID) {
-            // https://developers.facebook.com/docs/graph-api/reference/user
-            // fetch all the fields that we have available to use publically 
-            FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,quotes,significant_other,sports,picture.type(large)'}, function(response) {
-                setUserData({
-                    birthday: response.birthday,
-                    email: response.email,
-                    gender: response.gender,
-                    hometown: response.hometown?.name,
-                    inspirationalPeople: response.inspirational_people,
-                    favoriteAthletes: response.favorite_athletes,
-                    favoriteTeams: response.favorite_teams,
-                    languages: response.languages,
-                    link: response.link,
-                    profilePicture: {
-                        height: response.picture?.data?.height,
-                        width: response.picture?.data?.height,
-                        url: response.picture?.data?.url,
-                    },
-                    significantOther: response.significant_other,
-                    sports: response.sports
-                });
-                console.log(response);
-            });
-        }
-    }, [hasLoaded, userID]);
+
+    }, [hasLoaded, userID, userData, setUserData, setHasLoaded]);
 
     const OnLogOn = () => {
 
@@ -170,10 +148,40 @@ export default function fbRoute({
                 })
             }
         });
+
+        if (userID) {
+            // https://developers.facebook.com/docs/graph-api/reference/user
+            // fetch all the fields that we have available to use publically 
+            FB.api('/me', {fields: 'birthday,email,gender,hometown,inspirational_people,favorite_athletes,favorite_teams,languages,link,quotes,significant_other,sports,picture.type(large)'}, function(response: any) {
+                if (response && !response.error) {
+                    setUserData({
+                        ...userData,
+                        ...{
+                            birthday: response.birthday,
+                        email: response.email,
+                        gender: response.gender,
+                        hometown: response.hometown?.name,
+                        inspirationalPeople: response.inspirational_people,
+                        favoriteAthletes: response.favorite_athletes,
+                        favoriteTeams: response.favorite_teams,
+                        languages: response.languages,
+                        link: response.link,
+                        profilePicture: {
+                            height: response.picture?.data?.height,
+                            width: response.picture?.data?.height,
+                            url: response.picture?.data?.url,
+                        },
+                        significantOther: response.significant_other,
+                        sports: response.sports
+                        }
+                        
+                    });
+                }
+                console.log({response});
+            });
+        }
     }
     
-
-
 
     return (
         <>
@@ -183,14 +191,14 @@ export default function fbRoute({
                 <Sidebar />
                 {hasLoaded && isReady && (
                     <Box 
-                    component="main"  
-                    sx={{ 
-                        flexGrow: 1, 
-                        p: 3, 
-                        zIndex: '1200', 
-                        position: 'inherit' 
-                    }}  
-                    className="content"
+                        component="main"  
+                        sx={{ 
+                            flexGrow: 1, 
+                            p: 3, 
+                            zIndex: '1200', 
+                            position: 'inherit' 
+                        }}  
+                        className="content"
                     >
                             <Button
                                 variant="contained" 
@@ -216,10 +224,15 @@ export default function fbRoute({
                                 variant="outlined" 
                                 sx={{
                                     color: '#85ffe7', 
+                                    border: '1px solid #85ffe7',
                                     fontFamily: `'VT323', Courier`, 
                                     margin: 2,
                                     '& span': {
                                         animation: 'none',
+                                    },
+                                    '&:hover': {
+                                        color: '#ff38a9', 
+                                        border: '1px solid #ff38a9',
                                     }
                                 }}
                                 startIcon={<FacebookIcon />} 

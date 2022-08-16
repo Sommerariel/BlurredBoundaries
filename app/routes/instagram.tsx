@@ -3,7 +3,7 @@ import {
     useEffect, 
   } from 'react';
 import { useLoaderData } from "@remix-run/react";
-import { json }from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node"; 
 import type { LoaderFunction } from "@remix-run/node";
 
 import Box from '@mui/material/Box';
@@ -12,6 +12,14 @@ import Button from '@mui/material/Button';
 import Sidebar from "~/components/sidebar";
 
 import InstagramIcon from '@mui/icons-material/Instagram';
+
+import styles from "../styles/index.css";
+
+export const links: LinksFunction = () => {
+  return [
+    { rel: "stylesheet", href: styles },
+  ];
+};
 
 export type AccessToken = {
     accessToken: string;
@@ -71,9 +79,22 @@ export default function instagramRoute(): JSX.Element  {
     // console.log({instaData})
     return (
         <>
-            <Box sx={{ display: 'flex' }}>
+            <div className="overlay"></div>
+            <div className="scanline"></div>
+            <Box sx={{ display: 'flex', backgroundColor: '#363434' }}  className="wrapper">
                 <Sidebar />
-                <Button variant="contained" startIcon={<InstagramIcon />} onClick={onSearch}>Get your Public Info</Button>
+                <Box
+                    component="main"  
+                    sx={{ 
+                        flexGrow: 1, 
+                        p: 3, 
+                        zIndex: '1200', 
+                        position: 'inherit' 
+                    }}  
+                    className="content"
+                >
+                    <Button variant="contained" startIcon={<InstagramIcon />} onClick={onSearch}>Get your Public Info</Button>
+                </Box>
             </Box>
         </>
     )
