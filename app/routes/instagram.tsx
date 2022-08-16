@@ -69,7 +69,7 @@ export default function instagramRoute(): JSX.Element  {
         if (instaData) {
             toArray(instaData);
         }
-    }, [data.access_token, appId, instaData.id ]);
+    }, [data.access_token, appId, instaData?.id ]);
 
 
     const onSearch = () => {
