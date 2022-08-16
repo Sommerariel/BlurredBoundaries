@@ -79,49 +79,16 @@ export default function imageRoute(): JSX.Element  {
         setExifData({...tags});
     };
    
-    console.log({exifData})
-
-    // const toArray = (obj: any) => {
-    //     const result = [];
-    //     for (const prop in obj) {
-    //         const value = obj[prop];
-    //         if (typeof value === 'object') {
-    //             result.push(toArray(value)); // <- recursive call
-    //         }
-    //         else {
-    //             result.push(`${prop}: ${value}`);
-    //         }
-    //     }
-    //     setDisplayData({
-    //         ...result,
-    //         ...exifData,
-    //     });
-    //     console.log({result})
-    // }
-
-    // this doesn't do nested :(
     const result: any[] = [];
     const toArray = (obj: any) => {
         for (const [key, value] of Object.entries(obj)) {
-            // console.log(`${key}: ${value}`)
-            // console.log({key})
-            // console.log({value})
-            // console.log("typeof", typeof value)
-
             if (value !== 'object') {
-                // console.log("woof")
-                console.log(`${key}: ${value}`);
                 result.push(`${key}: ${value}`);
-                console.log({result})
             } 
             if (typeof value === 'object') {
-                // console.log("MEow")
-                // console.log({value})
                 toArray(value);
             }
-
         }
-
         setDisplayData(result);
         return result;
     }

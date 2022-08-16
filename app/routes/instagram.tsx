@@ -48,21 +48,17 @@ export default function instagramRoute(): JSX.Element  {
 
     const [appId, setAppId] = useState();
     const [instaData, setInstaData] = useState<any>();
+    const [displayData, setDisplayData] = useState<any>([]);
 
     const data = useLoaderData();
 
-    console.log({data})
-    console.log("access token", data.access_token);
-    console.log(" user id", data.user_id);
     const getUserInfo = async ({accessToken}: AccessToken) => {
         const fields='id,username,media_count,account_type';
         fetch(`https://graph.instagram.com/me?fields=${fields}&access_token=${accessToken}`)
         .then((response) => response.json())
         .then((data) => {
-            console.log("response data", data)
             setInstaData({...data});
         })
-        // console.log({res})
     }
 
     useEffect (() => {
@@ -70,7 +66,10 @@ export default function instagramRoute(): JSX.Element  {
         if (data.access_token) {
             getUserInfo({accessToken: data.access_token});
         }
-    }, [data.access_token, appId ]);
+        if (instaData) {
+            toArray(instaData);
+        }
+    }, [data.access_token, appId, instaData.id ]);
 
 
     const onSearch = () => {
@@ -79,6 +78,21 @@ export default function instagramRoute(): JSX.Element  {
     }
 
     console.log({instaData})
+
+    const result: any[] = [];
+    const toArray = (obj: any) => {
+        for (const [key, value] of Object.entries(obj)) {
+            if (value !== 'object') {
+                result.push(`${key}: ${value}`);
+            } 
+            if (typeof value === 'object') {
+                toArray(value);
+            }
+        }
+        setDisplayData(result);
+        return result;
+    }
+       
     return (
         <>
             <div className="overlay"></div>
@@ -114,6 +128,13 @@ export default function instagramRoute(): JSX.Element  {
                         onClick={onSearch}>
                             Get your Public Info
                         </Button>
+                        {instaData && (
+                            <Box>
+                                <p>//Data</p>
+                                {displayData}
+                            </Box>
+                        )}
+
                 </Box>
             </Box>
         </>
