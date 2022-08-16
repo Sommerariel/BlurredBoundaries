@@ -83,7 +83,7 @@ export default function imageRoute(): JSX.Element  {
     const toArray = (obj: any) => {
         for (const [key, value] of Object.entries(obj)) {
             if (value !== 'object') {
-                result.push(`${key}: ${value}`);
+                result.push(`${key}: ${value} `);
             } 
             if (typeof value === 'object') {
                 toArray(value);
