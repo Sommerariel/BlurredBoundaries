@@ -100,30 +100,31 @@ export default function imageRoute(): JSX.Element  {
     // }
 
     // this doesn't do nested :(
-
+    const result: any[] = [];
     const toArray = (obj: any) => {
-        const result = [];
         for (const [key, value] of Object.entries(obj)) {
-            console.log(`${key}: ${value}`)
-            console.log({key})
+            // console.log(`${key}: ${value}`)
+            // console.log({key})
             // console.log({value})
-            console.log("typeof", typeof value)
+            // console.log("typeof", typeof value)
+
+            if (value !== 'object') {
+                // console.log("woof")
+                console.log(`${key}: ${value}`);
+                result.push(`${key}: ${value}`);
+                console.log({result})
+            } 
             if (typeof value === 'object') {
-                console.log("MEow")
-                console.log({value})
+                // console.log("MEow")
+                // console.log({value})
                 toArray(value);
             }
-            if (value !== 'object') {
-                console.log("woof")
-                console.log({value})
-                result.push(`${key}: ${value}`);
-            } 
 
-    //     }
-    //     console.log({result})
-    //     setDisplayData(result);
-    //     return result;
-    // }
+        }
+
+        setDisplayData(result);
+        return result;
+    }
 
 
 

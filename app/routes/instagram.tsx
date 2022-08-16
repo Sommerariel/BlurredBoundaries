@@ -25,7 +25,7 @@ export type AccessToken = {
     accessToken: string;
 };
 
-const redirectUri = 'https://the-awesome-sommerariel-site.netlify.app/instagram';
+const redirectUri = 'https://blurred-boundaries.netlify.app/instagram';
 
 export const loader: LoaderFunction = async({ request }) => {
     const url = new URL(request.url);
