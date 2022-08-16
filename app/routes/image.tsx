@@ -65,7 +65,7 @@ export default function imageRoute(): JSX.Element  {
         };
 
         if (exifData) {
-            // toArray(exifData);
+            toArray(exifData);
         }
 
     }, [hasLoaded, selectedImage, exifData?.file?.["Image Height"]?.value]);
@@ -101,23 +101,23 @@ export default function imageRoute(): JSX.Element  {
 
     // this doesn't do nested :(
 
-    // const toArray = (obj: any) => {
-    //     const result = [];
-    //     for (const [key, value] of Object.entries(obj)) {
-    //         console.log(`${key}: ${value}`)
-    //         console.log({key})
-    //         // console.log({value})
-    //         console.log("typeof", typeof value)
-    //         if (typeof value === 'object') {
-    //             console.log("MEow")
-    //             console.log({value})
-    //             toArray(value);
-    //         }
-    //         if (value !== 'object') {
-    //             console.log("woof")
-    //             console.log({value})
-    //             result.push(`${key}: ${value}`);
-    //         } 
+    const toArray = (obj: any) => {
+        const result = [];
+        for (const [key, value] of Object.entries(obj)) {
+            console.log(`${key}: ${value}`)
+            console.log({key})
+            // console.log({value})
+            console.log("typeof", typeof value)
+            if (typeof value === 'object') {
+                console.log("MEow")
+                console.log({value})
+                toArray(value);
+            }
+            if (value !== 'object') {
+                console.log("woof")
+                console.log({value})
+                result.push(`${key}: ${value}`);
+            } 
 
     //     }
     //     console.log({result})
